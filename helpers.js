@@ -1,6 +1,5 @@
 // helper function to validate receipt contents and formatting
 const validReceipt = (retailer, date, time, items, total) => {
-  const retailerRegex = /^\S+$/;
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   const timeRegex = /^\d{2}:\d{2}/
   const priceRegex = /^\d+\.\d{2}$/;
@@ -10,7 +9,7 @@ const validReceipt = (retailer, date, time, items, total) => {
   if (!retailer || !date || !time || !items || !total) return false;
 
   // ensure format is correct on all
-  if (!retailerRegex.test(retailer) || !dateRegex.test(date) || !timeRegex.test(time) || !priceRegex.test(total)) return false;
+  if (!dateRegex.test(date) || !timeRegex.test(time) || !priceRegex.test(total)) return false;
 
   // make sure there is at least 1 item
   if (items.length < 1) return false;
@@ -32,6 +31,8 @@ const validReceipt = (retailer, date, time, items, total) => {
   const month = Number(dateArr[1]);
   const day = Number(dateArr[2]);
   if (year > currentYear || month > 12 || day > 31) return false;
+  if ((month === 4 || month === 6 || month === 9 || month === 11) && day > 30) return false;
+  if (month === 2 && day > 29) return false;
 
   // break down time, make sure it's a legal 24 hour time
   const timeArr = time.split(':');
@@ -44,6 +45,7 @@ const validReceipt = (retailer, date, time, items, total) => {
   return true;
 }
 
+// helper function to get total points awarded for a receipt
 const getPoints = (retailer, date, time, items, total) => {
   const retailerRegex = /[A-Za-z0-9]/g
 
@@ -87,6 +89,8 @@ const getPoints = (retailer, date, time, items, total) => {
   if (totalNum > 0 && totalNum % 25 === 0) {
     points += 25;
   }
+
+  return points;
 
 
 }
